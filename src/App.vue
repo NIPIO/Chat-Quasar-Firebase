@@ -1,26 +1,26 @@
 <template>
-  <router-view />
+  <router-view v-if="userGoogle !== false" />
 </template>
 
 <script setup>
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase"
 import { provide, ref } from "vue";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
+import { useQuasar } from "quasar";
 
-const userGoogle = ref()
-provide('userGoogle', userGoogle)
+const userGoogle = ref(false);
+
+provide("userGoogle", userGoogle);
+
+const $q = useQuasar();
 
 onAuthStateChanged(auth, (user) => {
-  userGoogle.value = user
-  // if (user) {
-  //   // User is signed in, see docs for a list of available properties
-  //   // https://firebase.google.com/docs/reference/js/auth.user
-  //   const uid = user.uid;
-  //   // ...
-  // } else {
-  //   // User is signed out
-  //   // ...
-  // }
+  userGoogle.value = user;
+  setTimeout(() => {
+    $q.loading.hide();
+  }, 30);
 });
+
+$q.loading.show();
 
 </script>
